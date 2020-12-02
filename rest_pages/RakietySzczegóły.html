@@ -1,0 +1,129 @@
+<head>
+    <title>Rakiety</title>
+    <link rel="stylesheet" href="..\Sc3css.css">
+</head>
+
+<body class="rocketInfoBody">
+    <div class="navbar">
+        <ul>
+            <li><a href="..\Strona główna.html">Strona Główna</a></li>
+            <li><a href="Starlinki.html">Starlinki</a></li>
+            <li><a href="Rakiety.html" class="current">Rakiety</a></li>
+            <li><a href="Tesla.html">Samochód tesla</a></li>
+        </ul>
+    </div>
+    <div class="rocketDiv">
+        <div class="rocketInfo">
+            <p>Nazwa :</p>
+            <div class="rocketValue" id="name">industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                 It has survived not only five centuries, but also the leap 
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>Wymiary i waga : </p>
+            <div class="rocketValue">
+                <ul>
+                    <li id="height">pierwsza pozycja</li><br>
+                    <li id="diameter">druga pozycja</li><br>
+                    <li id="mass">trzecia pozycja</li><br>
+                  </ul>
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>Opis :</p>
+            <div class="rocketValue" id="desc">industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                 It has survived not only five centuries, but also the leap 
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>Data pierwszego lotu :</p>
+            <div class="rocketValue" id="date">industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                 It has survived not only five centuries, but also the leap 
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>Koszt wystrzału rakiety :</p>
+            <div class="rocketValue" id="price">industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                 It has survived not only five centuries, but also the leap 
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>Czy jest aktualnie używana :</p>
+            <div class="rocketValue" id="isWorking">industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                 It has survived not only five centuries, but also the leap 
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>informacje o silniku :</p>
+            <div class="rocketValue">
+            <ul>
+                <li id="engineType">pierwsza pozycja</li><br>
+                <li id="thrustVacuum">druga pozycja</li><br>
+                <li id="thrustToWeight">trzecia pozycja</li><br>
+              </ul>
+            </div>
+        </div>
+        <div class="rocketInfo">
+            <p>Galeria :</p>
+            <div class="rocketGallery" id="gallery"></div>
+        </div>
+    </div>
+    
+    <script>
+        class rocketInfo{
+            constructor(){
+                this.rocketTable = JSON.parse(sessionStorage.getItem('info'));
+            }
+            displayData(){
+                let name = document.getElementById("name");
+                let height = document.getElementById("height");
+                let diameter = document.getElementById("diameter");
+                let mass = document.getElementById("mass");
+                let desc = document.getElementById("desc");
+                let date = document.getElementById("date");
+                let price = document.getElementById("price");
+                let isWorking = document.getElementById("isWorking");
+                let engine = document.getElementById("engine");
+                let gallery = document.getElementById("gallery");
+                let thrustVacuum = document.getElementById("thrustVacuum");
+                let engineType = document.getElementById("engineType");
+                let thrustToWeight = document.getElementById("thrustToWeight");
+                console.log(this.rocketTable)
+                name.innerHTML = this.rocketTable.name;
+                height.innerHTML = `Wysokość: ${this.rocketTable.height.meters} m`;
+                diameter.innerHTML = `Średnica: ${this.rocketTable.diameter.meters} m`;
+                mass.innerHTML = `Waga: ${this.rocketTable.mass.kg} kg`;
+                desc.innerHTML = this.rocketTable.description;
+                date.innerHTML = this.rocketTable.first_flight;
+                price.innerHTML = `${this.rocketTable.cost_per_launch} $`;
+                isWorking.innerHTML = this.rocketTable.active;
+                engineType.innerHTML =  `Typ: ${this.rocketTable.engines.type}`;
+                thrustVacuum.innerHTML =  `Siła ciągu: ${this.rocketTable.engines.thrust_vacuum.kN}kN , ${this.rocketTable.engines.thrust_vacuum.lbf} lbf`;
+                thrustToWeight.innerHTML = `Stosunek ciągu do wagi: ${this.rocketTable.engines.thrust_to_weight}`;
+                if(this.rocketTable.active == true) isWorking.innerHTML = "Tak";
+                else isWorking.innerHTML = "Nie";
+                this.rocketTable.flickr_images.forEach(element => {
+                    let img = document.createElement("img");
+                    let a = document.createElement("a");
+                    a.href = element;
+                    img.src = element;
+                    img.width = 400;
+                    img.height = 300;
+                    gallery.appendChild(a);
+                    a.appendChild(img);
+                    
+                });
+             
+            }
+         
+
+        }
+        const info = new rocketInfo();
+        info.displayData(); 
+    </script>
+</body>

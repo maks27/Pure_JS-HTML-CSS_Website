@@ -1,0 +1,68 @@
+<head>
+    <title>Rakiety</title>
+    <link rel="stylesheet" href="..\Sc3css.css">
+</head>
+
+<body class="rocketBody">
+    <div class="navbar">
+        <ul>
+            <li><a href="..\Strona główna.html">Strona Główna</a></li>
+            <li><a href="Starlinki.html">Starlinki</a></li>
+            <li><a href="Rakiety.html" class="current">Rakiety</a></li>
+            <li><a href="Tesla.html">Samochód tesla</a></li>
+        </ul>
+    </div>
+    <div id="rockets" class="rockets">
+    </div>
+    <script>
+        class Rocket {
+            constructor() {
+                this.rocketGetTable = this.getRocketData();
+
+            }
+            getRocketData() {
+                async function getData() {
+                    try {
+                        const response = await fetch('https://api.spacexdata.com/v4/rockets');
+                        const data = await response.json();
+                        return data;
+                    } catch (err) {
+                        console.error('Fetching data failed...');
+                    }
+                }
+                return getData();
+            }
+            displayData() {
+
+                this.rocketGetTable.then(result => {
+                    let div = document.getElementById("rockets");
+                    for (let i = 0; i < result.length; i++) {
+                        let divGallery = document.createElement("div");
+                        let divDesc = document.createElement("div");
+                        let img = document.createElement("img");
+                        divGallery.className = "galleryRocket";
+                        divDesc.className = "divDesc";
+                        divDesc.innerHTML = result[i].name;
+                        img.src = result[i].flickr_images[0];
+                        img.width = 600;
+                        img.height = 400;
+                        img.addEventListener("click", e => {
+                            sessionStorage.setItem('info', JSON.stringify(result[i]));
+                            window.location.href = "RakietySzczegóły.html";
+                        })
+                        div.appendChild(divGallery);
+                        divGallery.appendChild(divDesc);
+                        divGallery.appendChild(img);
+                    }
+                })
+            }
+            init() {
+                this.displayData();
+            }
+
+        }
+        const rocket = new Rocket()
+        rocket.init();
+        
+    </script>
+</body>

@@ -1,0 +1,146 @@
+<head>
+    <title>Starlinki</title>
+    <link rel="stylesheet" href="..\Sc3css.css">
+</head>
+
+<body class="starlinks">
+    <div class="navbar">
+        <ul>
+            <li><a href="..\Strona główna.html">Strona Główna</a></li>
+            <li><a href="Starlinki.html" class="current">Starlinki</a></li>
+            <li><a href="Rakiety.html">Rakiety</a></li>
+            <li><a href="Tesla.html">Samochód tesla</a></li>
+        </ul>
+    </div>
+    <div class="divTable">
+    <table id="starlinks" class="starlinksTable">
+        <thead>
+            <tr>
+                <th>Identyfikator</th>
+                <th>Nazwa</th>
+                <th>Data wystrzelenia</th>
+            </tr>
+        </thead>
+        <tbody id="dataShow">
+        </tbody>
+    </table>
+
+    <div id="listTable" class="listTable">
+        <button id="prevPage">&#60</button>
+        Strona:<span id="page"></span>/<span id="maxPage"></span>
+        <button id="nextPage">&#62</button>
+    </div>
+</div>
+    <script>
+        class Starlinks {
+            constructor() {
+                this.starlinksGetTable = this.getStarlinksData();
+                this.page = 0;
+                this.pageCount = 0;
+            }
+            getStarlinksData() {
+                async function fetchData() {
+                    try {
+                        const response = await fetch('https://api.spacexdata.com/v4/starlink');
+                        const data = await response.json();
+                        return data;
+                    } catch (err) {
+                        console.error('Fetching data failed...');
+                    }
+                }
+                return fetchData();
+            }
+            displayData(changePage) {
+                let maxPage = document.getElementById("maxPage");
+                try {
+                    this.starlinksGetTable.then(function (result) {
+
+                        for (let i = 0; i < 10; i++) {
+                            let nextPage = document.getElementById("nextPage");
+                            let idTd = document.getElementById(`${i}id`);
+                            let nameTd = document.getElementById(`${i}name`);
+                            let dateTd = document.getElementById(`${i}dateTd`);
+                            if (i + changePage > result.length - 1) {
+                                idTd.innerHTML = "";
+                                nameTd.innerHTML = "";
+                                dateTd.innerHTML = "";
+                                nextPage.disabled = true;
+
+                            } else {
+                                idTd.innerHTML = result[i + changePage].spaceTrack.OBJECT_ID;
+                                nameTd.innerHTML = result[i + changePage].spaceTrack.OBJECT_NAME;
+                                dateTd.innerHTML = result[i + changePage].spaceTrack.LAUNCH_DATE;
+                                nextPage.disabled = false;
+                            }
+                        }
+                        maxPage.innerHTML = Math.round(result.length / 10);
+
+                    })
+                }catch(err){
+                    console.error(`Failed to get date...`);
+
+                }
+
+                
+            }
+            createTable() {
+                let dataShow = document.getElementById("dataShow");
+                for (let i = 0; i < 10; i++) {
+                    let tr = document.createElement("tr");
+                    let idTd = document.createElement("td");
+                    let nameTd = document.createElement("td");
+                    let dateTd = document.createElement("td");
+                    idTd.id = `${i}id`;
+                    nameTd.id = `${i}name`;
+                    dateTd.id = `${i}dateTd`;
+                    tr.appendChild(idTd);
+                    tr.appendChild(nameTd);
+                    tr.appendChild(dateTd);
+                    dataShow.appendChild(tr);
+                }
+
+            }
+            changePage() {
+                let maxPage = document.getElementById("maxPage").innerText;
+                let pagefield = document.getElementById("page");
+                let nextPage = document.getElementById("nextPage");
+                let prevPage = document.getElementById("prevPage");
+                let dataShow = document.getElementById("dataShow");
+                prevPage.disabled = true;
+                pagefield.innerHTML = 1;
+                nextPage.addEventListener("click", e => {
+
+                    this.page += 1;
+                    pagefield.innerHTML = this.page + 1;
+                    this.displayData(this.page * 10)
+                    prevPage.disabled = false;
+
+                })
+                prevPage.addEventListener("click", e => {
+                    if (this.page > 0) {
+                        this.page -= 1;
+                        pagefield.innerHTML = this.page +1;
+                        this.displayData(this.page * 10)
+                        prevPage.disabled = false;
+                    }
+                    if (this.page == 0) {
+                        this.displayData(0);
+                        pagefield.innerHTML = 1;
+                        prevPage.disabled = true;
+                    }
+
+
+                })
+            }
+            init(){
+                this.createTable();
+                this.displayData(0);
+                this.changePage();
+            }
+
+
+        }
+        const starlink = new Starlinks();
+        starlink.init();
+    </script>
+</body>
